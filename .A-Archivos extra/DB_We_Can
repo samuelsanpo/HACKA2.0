@@ -1,0 +1,94 @@
+
+-- -----------------------------------------------------
+-- Schema We_Can
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `We_Can` DEFAULT CHARACTER SET utf8 ;
+USE `We_Can` ;
+
+-- -----------------------------------------------------
+-- Table `We_Can`.`Perfil`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `We_Can`.`Perfil` (
+  `idPerfil` INT NOT NULL,
+  `Descripcion` VARCHAR(45) NULL,
+  PRIMARY KEY (`idPerfil`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `We_Can`.`Persona`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `We_Can`.`Persona` (
+  `idPersona` INT NOT NULL,
+  `Nombre` VARCHAR(45) NULL,
+  `Edad` VARCHAR(45) NULL,
+  `Estado_civil` VARCHAR(45) NULL,
+  `Direccion` VARCHAR(45) NULL,
+  `Telefono` VARCHAR(45) NULL,
+  `Perfil_idPerfil` INT NOT NULL,
+  PRIMARY KEY (`idPersona`, `Perfil_idPerfil`),
+  INDEX `fk_Persona_Perfil1_idx` (`Perfil_idPerfil` ASC),
+  CONSTRAINT `fk_Persona_Perfil1`
+    FOREIGN KEY (`Perfil_idPerfil`)
+    REFERENCES `We_Can`.`Perfil` (`idPerfil`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `We_Can`.`Contacto`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `We_Can`.`Contacto` (
+  `idContacto` INT NOT NULL,
+  `Nombre` VARCHAR(45) NULL,
+  `Telefono` VARCHAR(45) NULL,
+  `Parentezco` VARCHAR(45) NULL,
+  PRIMARY KEY (`idContacto`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `We_Can`.`Casos`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `We_Can`.`Casos` (
+  `idCasos` INT NOT NULL,
+  `Descripcion` VARCHAR(45) NULL,
+  `Tipo` VARCHAR(45) NULL,
+  `Gravedad` INT(10) NULL,
+  `Persona_idPersona` INT NOT NULL,
+  PRIMARY KEY (`idCasos`, `Persona_idPersona`),
+  INDEX `fk_Casos_Persona1_idx` (`Persona_idPersona` ASC),
+  CONSTRAINT `fk_Casos_Persona1`
+    FOREIGN KEY (`Persona_idPersona`)
+    REFERENCES `We_Can`.`Persona` (`idPersona`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `We_Can`.`Persona_has_Contacto`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `We_Can`.`Persona_has_Contacto` (
+  `Persona_idPersona` INT NOT NULL,
+  `Contacto_idContacto` INT NOT NULL,
+  PRIMARY KEY (`Persona_idPersona`, `Contacto_idContacto`),
+  INDEX `fk_Persona_has_Contacto_Contacto1_idx` (`Contacto_idContacto` ASC),
+  INDEX `fk_Persona_has_Contacto_Persona_idx` (`Persona_idPersona` ASC),
+  CONSTRAINT `fk_Persona_has_Contacto_Persona`
+    FOREIGN KEY (`Persona_idPersona`)
+    REFERENCES `We_Can`.`Persona` (`idPersona`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Persona_has_Contacto_Contacto1`
+    FOREIGN KEY (`Contacto_idContacto`)
+    REFERENCES `We_Can`.`Contacto` (`idContacto`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
